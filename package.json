@@ -1,0 +1,43 @@
+{
+  "name": "api-45",
+  "version": "1.0.0",
+  "description": "- Dependency manager \r   - library or files or modules which is required by this project\r   -   \r   ```json\r     a. Dependency \r       - required only by this project \r     b. Global Dependency \r       - required by any project within the server/device \r     c. Dev Dependency\r       - Only required for development but not for production\r   ```\r   - Version Defintion or Project definition",
+  "main": "index.js",
+  "scripts": {
+    "watch": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Broadway-Mern-Team/api-45.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Broadway-Mern-Team/api-45/issues"
+  },
+  "homepage": "https://github.com/Broadway-Mern-Team/api-45#readme",
+  "keywords": [],
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.6.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.1",
+    "helmet": "^8.1.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.15.1",
+    "multer": "^2.0.1",
+    "nodemailer": "^7.0.3",
+    "nodemon": "^3.1.10",
+    "pg": "^8.16.2",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.7",
+    "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.3"
+  }
+}
