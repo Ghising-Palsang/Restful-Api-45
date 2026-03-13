@@ -1,7 +1,3 @@
-<<<<<<< HEAD
 node_modules/
 .env
-=======
-node_modules/
-.env
->>>>>>> 0d8ae54 (socket)
+
