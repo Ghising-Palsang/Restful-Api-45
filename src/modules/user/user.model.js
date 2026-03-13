@@ -41,6 +41,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: Object.values(Gender),
       default: Gender.OTHER,
+      required: true
     },
     image: {
       publicId: String,

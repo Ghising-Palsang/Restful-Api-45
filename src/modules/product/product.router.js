@@ -9,6 +9,7 @@ const productRouter = require('express').Router();
 productRouter.post('/',logInCheck, uploader().array("images"),bodyValidator(ProductDataDTO),productCtrl.storeProduct)
 productRouter.get('/',logInCheck, productCtrl.listAllProducts)
 
+
 productRouter.get('/:id',logInCheck, productCtrl.getProductDetailById)
 productRouter.put('/:id',logInCheck, uploader().array("images"),bodyValidator(ProductDataDTO), productCtrl.updateProduct)
 productRouter.delete('/:id', logInCheck, productCtrl.deleteById)

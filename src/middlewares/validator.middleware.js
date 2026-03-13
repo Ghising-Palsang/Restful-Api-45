@@ -6,7 +6,7 @@ const bodyValidator = (schema) => {
       const data = req.body;
 
     
-      console.log(data);
+      // console.log(data);
 
       if (!data) {
         throw {
@@ -19,6 +19,7 @@ const bodyValidator = (schema) => {
       await schema.validateAsync(data, { abortEarly: false });
       next();
     } catch (exception) {
+      // console.log(exception)
       //todo:
       let errorBag = {
         code: exception.code || null,

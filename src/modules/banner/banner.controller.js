@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const fileUploadSvc = require("../../services/fileupload.service");
 const BannerModel = require("./banner.model");
 
@@ -38,8 +39,8 @@ class BannerController {
 
   listAllBanners = async (req, res, next) => {
     try {
-      let page = +req.query.page;
-      let limit = +req.query.limit;
+      let page = +req.query.page || 1;
+      let limit = +req.query.limit || 10;
       let skip = (page - 1) * limit;
 
       let filter = {};
@@ -52,11 +53,11 @@ class BannerController {
       }
 
       if (req.query.search) {
-        filter = {
-          ...filter,
-          title: { [Op.iLike]: `%${req.query.search}%` },  // Op.iLike is an LIKE operator of sql for searching and %% looks for keyword that matches anywhere. Just like in mySql.
-          url: { [Op.iLike]: `%${req.query.search}%` },
-        };
+        const searchTerm = req.query.search;
+        filter[Op.or] = [
+          { title: { [Op.iLike]: `%${searchTerm}%` } },
+          { url: { [Op.iLike]: `%${searchTerm}%` } },
+        ];
       }
 
       const { rows, count } = await BannerModel.findAndCountAll({
@@ -68,7 +69,7 @@ class BannerController {
 
       res.json({
         data: rows,
-        message: "Bannner Listed",
+        message: "Banner Listed",
         status: "BANNER_LIST_SUCCESS",
         options: {
           pagination: {
@@ -158,6 +159,7 @@ class BannerController {
           _id: req.params.id,
         },
       });
+      console.log("ID received:", req.params.id);
 
       if (!data) {
         throw {
@@ -186,16 +188,18 @@ class BannerController {
 
   listAllForHomeBanners = async (req, res, next) => {
     try {
+      
+
       let filter = {
         status: "active",
       };
 
       if (req.query.search) {
-        filter = {
-          ...filter,
-          title: { [Op.iLike]: `%${req.query.search}%` },
-          url: { [Op.iLike]: `%${req.query.search}%` },
-        };
+        const searchTerm = req.query.search;
+        filter[Op.or] = [
+          { title: { [Op.iLike]: `%${searchTerm}%` } },
+          { url: { [Op.iLike]: `%${searchTerm}%` } },
+        ];
       }
 
       const rows = await BannerModel.findAll({
@@ -207,15 +211,9 @@ class BannerController {
 
       res.json({
         data: rows,
-        message: "Bannner Listed",
+        message: "Banner Listed",
         status: "BANNER_LIST_SUCCESS",
-        options: {
-          pagination: {
-            page: page,
-            limit: limit,
-            count: count,
-          },
-        },
+        options: null,
       });
     } catch (exception) {
       next(exception);

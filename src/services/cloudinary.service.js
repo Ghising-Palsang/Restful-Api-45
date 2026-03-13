@@ -21,6 +21,7 @@ class CloudinaryService {
 
             fileDelete(filepath); // delete the file from local storage after upload 
 
+            //
             const imageUrl = cloudinary.url(public_id,{
                 transformation:[
                     { width: 1024, height:1024, crop: 'scale' },

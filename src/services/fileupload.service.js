@@ -8,5 +8,5 @@ class FileUploadService{
 }
 
 const fileUploadSvc = new FileUploadService();
-
+    
 module.exports = fileUploadSvc; 

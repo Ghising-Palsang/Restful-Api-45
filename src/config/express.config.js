@@ -1,16 +1,15 @@
-
 const express = require("express"); // importing express from package
 const router = require("./router.config");
 require("./mongodb.config"); // importing mongodb config file to connect with mongodb
-require('./sql.config')
+require("./sql.config");
 const cors = require("cors");
-const helmet = require("helmet")
-const {rateLimit} = require("express-rate-limit")
+const helmet = require("helmet");
+const { rateLimit } = require("express-rate-limit");
 
-const app = express(); // creaeubg express application
-app.use(cors()); 
+const app = express(); // create express application
+app.use(cors());
 
-// const corsOptions = {
+// const corsOptions = { 
 //   origin: "*",
 //   // methods: ["GET","POST","PUT","DELETE"]
 // }
@@ -24,14 +23,16 @@ app.use(cors());
 
 // what is handshake, sanitization, helmet package for xss(sanitization).
 
-// xss - cross site scripting 
-app.use(helmet())
+// xss - cross site scripting
+app.use(helmet());
 
 // limit - api load limit
-app.use(rateLimit({
-  windowMs: 60000, // 60000 milisecond is 1 minute. In one minute 30 api call is allowed.
-  limit: 30
-}))
+app.use(
+  rateLimit({
+    windowMs: 60000, // 60000 milisecond is 1 minute. In one minute 30 api call is allowed.
+    limit: 30,
+  })
+);
 
 // Configure the Content-Security-Policy header.
 // app.use(
@@ -43,8 +44,6 @@ app.use(rateLimit({
 //     },
 //   }),
 // );
-
-
 
 // // parsers
 // app.use(express.json()); // to parse into json format
@@ -89,20 +88,18 @@ app.use((error, req, res, next) => {
   // TODO : ongoing process
 
   if (error.name === "MongoServerError") {
-      responseCode = 400;
-      detail = {},
-      msg = "Unique Validation Failed"
-      status = "VALIDATION_FAILED"
+    responseCode = 400;
+    detail = {};
+    msg = "Unique Validation Failed";
+    status = "VALIDATION_FAILED";
 
-       //Unique failed
+    //Unique failed
     if (+error.code === 11000) {
       Object.keys(error.keyPattern).map((field) => {
         detail[field] = `${field} should be unique`;
       });
     }
-  };
-
-   
+  }
 
   res.status(responseCode).json({
     error: detail,

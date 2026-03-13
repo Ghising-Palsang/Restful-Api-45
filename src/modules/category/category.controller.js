@@ -70,7 +70,53 @@ class CategoryController {
 
       res.json({
         data: data,
-        message: "List of Categorys",
+        message: "List of Category",
+        name: "CATEGORY_LISTS",
+        options: {
+          pagination: {
+            current: page,
+            total: total, // how many doc matches the given filter
+            pageSize: limit,
+          },
+        },
+      });
+    } catch (exception) {
+      next(exception);
+    }
+  };
+
+  listAllForHomeCategories = async (req, res, next) => {
+    try {
+      let page = +req.query.page || 1;
+      let limit = +req.query.limit || 40;
+
+      // 100 data
+      // 1 = 0-9 , 2 = 10-19, 3 = 20-29
+      // as 1 page contains 10 items for now as limit is 10. so to skip a single page we need to skip those 10 items.
+      let skip = (page - 1) * limit;
+
+      let filter = {
+        status: "active"
+      };
+
+      if (req.query.search) {
+        filter = {
+          ...filter,
+          name: new RegExp(req.query.search, "i"),
+        };
+      }
+
+      const data = await CategoryModel.find(filter)
+        .populate("parentId", ["_id", "name", "slug", "status", "image"])
+        .sort({ createdAt: "desc" })
+        .limit(limit)
+        .skip(skip);
+
+      let total = await CategoryModel.countDocuments(filter); // for e.g if the filter is like book , it counts how many documents have name book with case insensitivity
+
+      res.json({
+        data: data,
+        message: "List of Category",
         name: "CATEGORY_LISTS",
         options: {
           pagination: {
@@ -134,8 +180,8 @@ class CategoryController {
         payload.image = categoryDetail.image;
       }
 
-      if(!payload.parentId){
-        payload.parentId = null
+      if (!payload.parentId) {
+        payload.parentId = null;
       }
 
       let category = await CategoryModel.findOneAndUpdate(

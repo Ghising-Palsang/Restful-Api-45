@@ -26,14 +26,14 @@ class EmailService {
     async sendEmail({to, sub ,message ,cc=null ,bcc=null,attachments=null}){
         try{
             let msgBody = {
-                 from: SmtpConfig.from,
+                from: SmtpConfig.from,
                 to:to,
                 subject: sub,           
                 html: message,
             }
 
             if(cc){
-                msgBody['cc'] = cc;
+                msgBody['cc'] = cc; 
             }
 
             if(bcc){

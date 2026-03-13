@@ -1,9 +1,12 @@
+const ChatModel = require("./chat.model");
+
 class ChatController {
   storeChat = async (req, res, next) => {
     try {
       const payload = req.body;
       payload.sender = req.loggedInUser._id;
-
+      console.log("loggedINUser",req.loggedInUser._id)
+    
       const chat = new ChatModel(payload);
       await chat.save();
 
@@ -63,6 +66,9 @@ class ChatController {
       next(exception);
     }
   };
+
+
+  
 }
 
 const chatCtrl = new ChatController();

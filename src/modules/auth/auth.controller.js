@@ -10,6 +10,7 @@ const authSvc = require("./auth.service");
 class AuthCtrl {
   userRegister = async (req, res, next) => {
     try {
+      
       const data = await userSvc.transfromUserCreateData(req);
       const user = await userSvc.CreateUser(data); // Insert operation
       await authEmailSvc.notifyAccountRegister(user);
@@ -70,7 +71,7 @@ class AuthCtrl {
 
       if (!userDetail) {
         throw {
-          code: 403,
+          code: 401,
           message: "User not found",
           name: "USER_NOT_FOUND_ERR",
         };
@@ -83,7 +84,7 @@ class AuthCtrl {
       // if activation status is not active then we will not allow user to login => access denied 403
       if (userDetail.status !== Status.ACTIVE) {
         throw {
-          code: 422,
+          code: 401,
           message: "User account is not active, please activate your account",
           name: "USER_NOT_ACTIVE_ERR",
         };
@@ -92,7 +93,7 @@ class AuthCtrl {
       // if activation status is active then we will check password
       if (!bcrypt.compareSync(password, userDetail.password)) {
         throw {
-          code: 422,
+          code: 401,
           message: "Invalid password",
           name: "INVALID_PASSWORD_ERR",
         };
@@ -130,11 +131,11 @@ class AuthCtrl {
       next(exception);
     }
   };
-
+  
   activateRegisteredUser = async (req, res, next) => {
     // Here you would typically verify the token and activate the user account
     try {
-      const token = req.params.token;
+      const token = req.params.token; // token as activation token
       const userDetail = await userSvc.getSingleUserByFilter({
         activationToken: token,
       });
@@ -149,16 +150,16 @@ class AuthCtrl {
       const today = Date.now();
       const expiryTime = userDetail.expiryTime.getTime();
 
-      if (today > expiryTime) {
+      if (today > expiryTime) {  // if expired
         await userSvc.updateSingleUserByFilter(
           { _id: userDetail._id },
           {
-            activationToken: generateRandomString(150),
+            activationToken: generateRandomString(100),
             expiryTime: new Date(Date.now() + 3 * 3600 * 1000), // 3 hours from now
           }
         );
         await authEmailSvc.notifyNewActivationLink(userDetail);
-      } else {
+      } else { // if not expired
         await userSvc.updateSingleUserByFilter(
           { _id: userDetail._id },
           {
@@ -231,6 +232,21 @@ class AuthCtrl {
     }
   }
 
+
+  listOfUsers = async(req, res, next) => {
+    try {
+      const users = await userSvc.listOfUsers();
+      const publicUsers = userSvc.getListOfPublicUsers(users)
+      res.json({
+        data:publicUsers,
+        message: "List of Users",
+        status: "ok",
+        options: null
+      })
+    } catch (error) {
+      throw error;
+    }
+  }
   
 }
 

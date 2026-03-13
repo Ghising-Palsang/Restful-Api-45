@@ -13,11 +13,7 @@ authRouter.post('/register',uploader().single('image'),bodyValidator(RegisterUse
 
 // activate user
     // get ==> URL ==> /activate/:token ===> activateUser
-authRouter.get('/activate/:token',(req,res,next)=>{
-    console.log('I am router level middleware')   // runs only inside this router
-    next()
-},
-authCtrl.activateRegisteredUser)
+authRouter.get('/activate/:token',authCtrl.activateRegisteredUser)
 
 // login
 authRouter.post('/login',bodyValidator(LoginDTO),authCtrl.loginUser)
@@ -25,10 +21,12 @@ authRouter.post('/login',bodyValidator(LoginDTO),authCtrl.loginUser)
 authRouter.get('/user/:userId',authCtrl.getUserProfileByUserId)
 
 
+
 // private
 authRouter.get('/me',logInCheck,authCtrl.getLoggedInUser)
 authRouter.put('/me',logInCheck,authCtrl.updateMyProfile)
-authRouter.get('/logout',logInCheck,authCtrl.logoutUser)
+authRouter.post('/logout',logInCheck,authCtrl.logoutUser)
+authRouter.get('/listOfUsers', logInCheck, authCtrl.listOfUsers)
 
 // forget password
     // post ===> URL ==> /forgot-password ===> forgotPasswordRequest
@@ -36,4 +34,4 @@ authRouter.post('/forgotPassword',authCtrl.forgotPasswordRequest)
 
 
 
-module.exports = authRouter;
+module.exports = authRouter;   

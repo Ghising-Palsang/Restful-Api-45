@@ -15,6 +15,7 @@ const logInCheck = async (req, res, next) => {
     }
     // console.log(token)
     token = token.replace("Bearer", "").trim();
+    // we look up token in sessionData to see if it's still valid and active.
     const sessionData = await authSvc.getSingleRow({
       accessToken: token,
     });
@@ -41,7 +42,7 @@ const logInCheck = async (req, res, next) => {
 
     req.loggedInUser = await userSvc.getUserPublicProfile(userDetail)
     // the userDetail which is in above contains logged in userDetails and it has both confidential and non-confidential/public data. 
-    // But we should send confidential data to the client because it make our server prone to hacking.
+    // But we should not send confidential data to the client because it make our server prone to hacking.
     // so using userSvc.getUserPublicProfile we take userDetail as arguments and filter out public data from userData.
     // and make sure we don't send confidential data.
 

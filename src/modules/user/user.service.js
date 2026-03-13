@@ -21,7 +21,7 @@ class UserService {
       // Activation process
       data.activationToken = generateRandomString(); //JWT token / random string
       data.expiryTime = new Date(Date.now() + 3 * 3600 * 1000); // hour into second and into millisecond
-      data.status = Status.ACTIVE;
+      data.status = Status.INACTIVE;
 
       return data;
     } catch (exception) {
@@ -52,7 +52,7 @@ class UserService {
       const user = await UserModel.findOneAndUpdate(
         filter,
         { $set: data },
-        { new: true }
+        { new: true },
       );
       return user;
     } catch (exception) {
@@ -70,8 +70,21 @@ class UserService {
       address: userDetail.address,
       gender: userDetail.gender,
       phone: userDetail.phone,
-      image: userDetail.image
+      image: userDetail.image,
     };
+  };
+
+  listOfUsers = async () => {
+    try {
+      const users = await UserModel.find();
+      return users;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  getListOfPublicUsers = (users) => {
+    return users.map(user=> this.getUserPublicProfile(user))
   };
 }
 
